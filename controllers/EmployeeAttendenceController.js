@@ -120,7 +120,7 @@ exports.punchOutEmployee = async (req, res) => {
             });
         }
 
-        // ✅ Find existing punchIn for the employee on this date
+        // ✅ Find today's attendance record for this employee
         const existing = await EmployeeAttendence.findOne({
             employeeName,
             date
@@ -133,25 +133,19 @@ exports.punchOutEmployee = async (req, res) => {
             });
         }
 
-        if (existing.punchOut && existing.punchOut !== "") {
+        if (existing.punchOut) {
             return res.status(400).json({
                 success: false,
                 message: `${employeeName} has already punched out today`
             });
         }
 
+        // ✅ Update existing record instead of creating a new one
+        existing.punchOut = punchOut;
+        existing.latitudeOut = latitude;  // optional: separate field for punchOut location
+        existing.longitudeOut = longitude;
 
-        // Save new punchIn
-        const attendence = new EmployeeAttendence({
-            employeeName,
-            punchOut,
-            date,
-            latitude,
-            longitude
-        });
-
-        await attendence.save();
-
+        await existing.save();
 
         return res.status(200).json({
             success: true,
@@ -166,6 +160,7 @@ exports.punchOutEmployee = async (req, res) => {
         });
     }
 };
+
 
 
 exports.fetchAllEmployeeAttendence = async (req, res) => {
