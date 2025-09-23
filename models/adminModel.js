@@ -19,7 +19,13 @@ const AdminSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+
+    // Adjust The Radius
+    radius: {
+        type: Number,
+        default: 0
+    }
 });
 
 
-module.exports = mongoose.model("Admin",AdminSchema)
+module.exports = mongoose.model("Admin", AdminSchema)

@@ -134,6 +134,7 @@ exports.adminProfile = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.userName,
+                radius:user.radius
             }
         });
 
@@ -148,14 +149,62 @@ exports.adminProfile = async (req, res) => {
 
 
 
-exports.fetchAllAttendence = async (req, res) =>{
+exports.updateAdminRadius = async (req, res) => {
     try {
-        const {} = req.body
+        const userId = req.user.userId;
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide userId'
+            });
+        }
+
+        const { radius } = req.body;
+        if (!radius) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide radius'
+            });
+        }
+
+        // ✅ Fetch admin by ID
+        const admin = await Admin.findById(userId);
+
+        if (!admin) {
+            return res.status(404).json({
+                success: false,
+                message: "Admin not found"
+            });
+        }
+
+        admin.radius = radius;
+        await admin.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Radius updated successfully",
+            radius: admin.radius
+        });
+
     } catch (error) {
-        console.log(error,error.message);
+        console.log("Server Error in updateAdminRadius:", error.message);
         return res.status(500).json({
-            sucess:false,
-            message:"Server In FetchUserAttendence"
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
+
+exports.fetchAllAttendence = async (req, res) => {
+    try {
+        const { } = req.body
+    } catch (error) {
+        console.log(error, error.message);
+        return res.status(500).json({
+            sucess: false,
+            message: "Server In FetchUserAttendence"
         })
     }
 }
