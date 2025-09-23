@@ -145,3 +145,17 @@ exports.adminProfile = async (req, res) => {
         })
     }
 }
+
+
+
+exports.fetchAllAttendence = async (req, res) =>{
+    try {
+        const {} = req.body
+    } catch (error) {
+        console.log(error,error.message);
+        return res.status(500).json({
+            sucess:false,
+            message:"Server In FetchUserAttendence"
+        })
+    }
+}

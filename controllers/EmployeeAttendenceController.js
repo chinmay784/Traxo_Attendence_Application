@@ -3,7 +3,7 @@ const EmployeeAttendence = require("../models/employeeAttendenceModel");
 
 exports.punchInEmployee = async (req, res) => {
     try {
-        const { employeeName, punchIn, date } = req.body;
+        const { employeeName, punchIn, date, latitude, longitude } = req.body;
 
         if (!employeeName) {
             return res.status(400).json({
@@ -26,6 +26,21 @@ exports.punchInEmployee = async (req, res) => {
             });
         }
 
+
+        if (!latitude) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Provide latitude"
+            });
+        }
+
+        if (!longitude) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Provide longitude"
+            });
+        }
+
         // ✅ Check if employee already punched in today
         const existing = await EmployeeAttendence.findOne({
             employeeName: employeeName,
@@ -43,7 +58,9 @@ exports.punchInEmployee = async (req, res) => {
         const attendence = new EmployeeAttendence({
             employeeName,
             punchIn,
-            date
+            date,
+            latitude,
+            longitude
         });
 
         await attendence.save();
@@ -66,7 +83,7 @@ exports.punchInEmployee = async (req, res) => {
 
 exports.punchOutEmployee = async (req, res) => {
     try {
-        const { employeeName, punchOut, date } = req.body;
+        const { employeeName, punchOut, date, latitude, longitude } = req.body;
 
         if (!employeeName) {
             return res.status(400).json({
@@ -86,6 +103,20 @@ exports.punchOutEmployee = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "Please provide date"
+            });
+        }
+
+        if (!latitude) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Provide latitude"
+            });
+        }
+
+        if (!longitude) {
+            return res.status(400).json({
+                success: false,
+                message: "Please Provide longitude"
             });
         }
 
@@ -109,7 +140,18 @@ exports.punchOutEmployee = async (req, res) => {
             });
         }
 
-        await existing.save();
+
+        // Save new punchIn
+        const attendence = new EmployeeAttendence({
+            employeeName,
+            punchOut,
+            date,
+            latitude,
+            longitude
+        });
+
+        await attendence.save();
+
 
         return res.status(200).json({
             success: true,
