@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 exports.connectToDatabase = async () => {
     try {
         // pass dataBase URL
-        await mongoose.connect("mongodb://localhost:27017/Traxo_Attendence");
+        await mongoose.connect("mongodb+srv://chinmaypuhan420_db_user:EaCvDzam6K1PsdXB@cluster0.eekljur.mongodb.net/Traxo_Attendence");
         console.log('Database connected successfully');
     } catch (error) {
         console.error('Database connection failed:', error);
@@ -12,3 +12,5 @@ exports.connectToDatabase = async () => {
     }
 };
 
+// chinmaypuhan420_db_user
+// EaCvDzam6K1PsdXB
