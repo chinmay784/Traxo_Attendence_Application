@@ -1,5 +1,6 @@
 const Admin = require("../models/adminModel");
 const jwt = require("jsonwebtoken")
+const EmployeeAttendence = require("../models/employeeAttendenceModel")
 
 
 exports.adminSignUp = async (req, res) => {
@@ -134,7 +135,7 @@ exports.adminProfile = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.userName,
-                radius:user.radius
+                radius: user.radius
             }
         });
 
@@ -199,7 +200,31 @@ exports.updateAdminRadius = async (req, res) => {
 
 exports.fetchAllAttendence = async (req, res) => {
     try {
-        const { } = req.body
+        const userId = req.user.userId;
+        if (!userId) {
+            return res.status(200).json({
+                sucess: false,
+                message: "Please Provide UserId"
+            })
+        }
+
+
+        // find all Attendence of Employee
+        const Allattendence = await  EmployeeAttendence.find({});
+
+        if(!Allattendence){
+            return res.status(200).json({
+                sucess:false,
+                message:"No Data Present in Allattendence"
+            })
+        }
+
+        return res.status(200).json({
+            sucess:true,
+            message:"Allattendence Fetched SucessFully",
+            Allattendence,
+        })
+
     } catch (error) {
         console.log(error, error.message);
         return res.status(500).json({
