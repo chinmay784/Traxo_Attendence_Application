@@ -1,6 +1,7 @@
 const Admin = require("../models/adminModel");
 const jwt = require("jsonwebtoken")
-const EmployeeAttendence = require("../models/employeeAttendenceModel")
+const EmployeeAttendence = require("../models/employeeAttendenceModel");
+const employeeNameSchema = require("../models/AllEmployeeName")
 
 
 exports.adminSignUp = async (req, res) => {
@@ -40,7 +41,7 @@ exports.adminSignUp = async (req, res) => {
             message: "Server Error in while SignUp Time"
         })
     }
-}
+};
 
 
 exports.login = async (req, res) => {
@@ -93,7 +94,7 @@ exports.login = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.userName,
-                radius:user.radius,
+                radius: user.radius,
             },
             token,
         });
@@ -105,7 +106,7 @@ exports.login = async (req, res) => {
             success: false
         });
     }
-}
+};
 
 
 exports.adminProfile = async (req, res) => {
@@ -147,7 +148,7 @@ exports.adminProfile = async (req, res) => {
             message: "Server error in adminProfile"
         })
     }
-}
+};
 
 
 
@@ -211,18 +212,18 @@ exports.fetchAllAttendence = async (req, res) => {
 
 
         // find all Attendence of Employee
-        const Allattendence = await  EmployeeAttendence.find({});
+        const Allattendence = await EmployeeAttendence.find({});
 
-        if(!Allattendence){
+        if (!Allattendence) {
             return res.status(200).json({
-                sucess:false,
-                message:"No Data Present in Allattendence"
+                sucess: false,
+                message: "No Data Present in Allattendence"
             })
         }
 
         return res.status(200).json({
-            sucess:true,
-            message:"Allattendence Fetched SucessFully",
+            sucess: true,
+            message: "Allattendence Fetched SucessFully",
             Allattendence,
         })
 
@@ -231,6 +232,85 @@ exports.fetchAllAttendence = async (req, res) => {
         return res.status(500).json({
             sucess: false,
             message: "Server In FetchUserAttendence"
+        })
+    }
+};
+
+
+
+exports.adminAddEmployeeName = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        if (!userId) {
+            return res.status(200).json({
+                sucess: false,
+                message: "Please Provide userId"
+            })
+        };
+
+        const { employeeName } = req.body;
+
+        if (!employeeName) {
+            return res.status(200).json({
+                sucess: false,
+                message: "Please Provide employeeName"
+            })
+        };
+
+        // Save In DataBase
+        const saveInDB = await employeeNameSchema.create({
+            employeeName: employeeName,
+        });
+
+        return res.status(200).json({
+            sucess: false,
+            message: "Employee Added"
+        });
+
+
+    } catch (error) {
+        console.log(error, error.message);
+        return res.status(500).json({
+            sucess: false,
+            message: "Server Error in adminAddEmployeeName"
+        })
+    }
+}
+
+
+exports.adminDeleteEmployeeName = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        if (!userId) {
+            return res.status(200).json({
+                sucess: false,
+                message: "Please Provide userId"
+            })
+        };
+
+        const { empId } = req.body;
+
+        if (!empId) {
+            return res.status(200).json({
+                sucess: false,
+                message: "Please Provide empId"
+            })
+        };
+
+        const deleteEmpID = await employeeNameSchema.findByIdAndDelete(empId);
+
+        return res.status(200).json({
+            sucess: true,
+            message: "Employee Deleted"
+        });
+
+    } catch (error) {
+        console.log(error, error.message);
+        return res.status(500).json({
+            sucess: false,
+            message: "Server Error in adminDeleteEmployeeName"
         })
     }
 }
