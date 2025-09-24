@@ -314,3 +314,32 @@ exports.adminDeleteEmployeeName = async (req, res) => {
         })
     }
 }
+
+
+exports.fetchAllEmployeeName = async (req, res) => {
+    try {
+        // fetch EmployeeName 
+
+        const allEmplyName = await employeeNameSchema.find({});
+
+        if (!allEmplyName) {
+            return res.status(200).json({
+                sucess: false,
+                message: "No Data Found"
+            });
+        };
+
+        return res.status(200).json({
+            sucess:true,
+            message:"FetchAllEmployee Name SucessFully",
+            allEmplyName,
+        })
+
+    } catch (error) {
+        console.log(error, error.message);
+        return res.status(500).json({
+            sucess: false,
+            message: "Server Error in fetchAllEmployeeName"
+        })
+    }
+}
