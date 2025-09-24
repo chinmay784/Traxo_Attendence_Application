@@ -93,6 +93,7 @@ exports.login = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.userName,
+                radius:user.radius,
             },
             token,
         });
